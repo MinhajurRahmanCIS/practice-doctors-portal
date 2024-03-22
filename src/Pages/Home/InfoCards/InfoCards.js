@@ -10,21 +10,24 @@ const InfoCards = () => {
             name: "Opening Hours",
             description: "Open 09:00 AM to 05:00 PM Everyday",
             icon: clock ,
-            bgClass: "bg-gradient-to-r from-primary to-secondary"
+            bgClass: "bg-gradient-to-r from-primary to-secondary",
+            hover: "from-secondary hover:to-primary"
         },
         {
             id: 2,
             name: "Visit our location",
             description: "Brooklyn, NY 10036, United States",
             icon: marker ,
-            bgClass: "bg-accent"
+            bgClass: "bg-gradient-to-r from-accent to-accent",
+            hover: "from-slate-500 hover:to-slate-500"
         },
         {
             id: 3,
             name: "Contact us now",
             description: "+000 123 456789",
             icon: phone ,
-            bgClass: "bg-gradient-to-r from-primary to-secondary"
+            bgClass: "bg-gradient-to-r from-primary to-secondary",
+            hover: "from-secondary hover:to-primary"
         },
     ];
     console.log(cardData)
