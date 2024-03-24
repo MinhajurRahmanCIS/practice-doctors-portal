@@ -1,14 +1,33 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../../context/AuthProvider';
 
 const Navbar = () => {
+    const { user, logout } = useContext(AuthContext);
+    const handelLogout = () => {
+        logout()
+            .then(() => { })
+            .catch(error => console.log(error.message));
+    };
     const menu =
         <>
             <li><Link to="/">Home</Link></li>
-            <li><Link to="/appointment">Appointment</Link></li>
-            <li><Link to="/aboutUs">About Us</Link></li>
-            <li><Link to="/login">Login</Link></li>
-            <li><Link to="/signup">Signup</Link></li>
+            {/* <li><Link to="/appointment">Appointment</Link></li> */}
+            {/* <li><Link to="/aboutUs">About Us</Link></li> */}
+            {
+                user?.uid ?
+                    <>
+                        <li><Link to="/dashboard">Dashboard</Link></li>
+                        <li><button className='btn btn-sm btn-error ' onClick={handelLogout}>Logout</button></li>
+                    </>
+
+                    :
+                    <>
+                        <li><Link to="/login">Login</Link></li>
+                        <li><Link to="/signup">Signup</Link></li>
+                    </>
+            }
+
         </>
         ;
     return (
@@ -24,9 +43,26 @@ const Navbar = () => {
                 </div>
                 <Link to="/" className="btn btn-ghost text-xl">Doctors Portal</Link>
             </div>
+            {user?.uid &&
+                <div className='navbar-end md:hidden '>
+                    <div className="avatar">
+                        <div className="me-3 w-8 rounded-full ring ring-secondary ring-offset-base-100 ring-offset-2">
+                            <img src={user?.photoURL ? user.photoURL : "https://static.vecteezy.com/system/resources/previews/018/742/015/original/minimal-profile-account-symbol-user-interface-theme-3d-icon-rendering-illustration-isolated-in-transparent-background-png.png"} alt="" />
+                        </div>
+                    </div>
+                </div>
+
+            }
             <div className="navbar-end hidden lg:flex">
                 <ul className="menu menu-horizontal px-1 gap-0.5">
                     {menu}
+                    {user?.uid &&
+                        <div className="avatar">
+                            <div className="ms-3 w-8 rounded-full ring ring-secondary ring-offset-base-100 ring-offset-2">
+                                <img src={user?.photoURL ? user.photoURL : "https://static.vecteezy.com/system/resources/previews/018/742/015/original/minimal-profile-account-symbol-user-interface-theme-3d-icon-rendering-illustration-isolated-in-transparent-background-png.png"} alt="" />
+                            </div>
+                        </div>
+                    }
                 </ul>
             </div>
         </div>
