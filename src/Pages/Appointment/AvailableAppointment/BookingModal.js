@@ -1,8 +1,12 @@
 import { format } from 'date-fns';
-import React from 'react';
+import React, { useContext } from 'react';
+import { AuthContext } from '../../../context/AuthProvider';
+import toast from 'react-hot-toast';
 
-const BookingModal = ({ treatment, selectedDate, setTreatment }) => {
-    const { name, slots } = treatment;
+const BookingModal = ({ treatment, selectedDate, setTreatment, refetch }) => {
+    const { name: treatmentName, slots } = treatment;
+    const { user } = useContext(AuthContext);
+
     const handelBooking = event => {
         event.preventDefault();
         const form = event.target;
@@ -14,14 +18,35 @@ const BookingModal = ({ treatment, selectedDate, setTreatment }) => {
 
         const booking = {
             appointmentDate: date,
-            treatment: name,
+            treatment: treatmentName,
             patient: name,
             slot,
             email,
             phone
         };
-        setTreatment(null);
         console.log(booking);
+
+        fetch('http://localhost:5000/bookings', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(booking)
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                if (data.insertedId) {
+                    toast.success("Booking Successfully")
+                    refetch();
+                    setTreatment(null);
+                }
+                else {
+                    toast.error(data.message);
+                }
+            });
+
+
     }
     return (
         <>
@@ -29,7 +54,7 @@ const BookingModal = ({ treatment, selectedDate, setTreatment }) => {
             <div className="modal" role="dialog">
                 <div className="modal-box">
                     <div className="modal-action mt-0 justify-between">
-                        <h3 className="font-bold text-xl">{name}</h3>
+                        <h3 className="font-bold text-xl">{treatmentName}</h3>
                         <label htmlFor="booking-modal" className="btn btn-sm">X</label>
                     </div>
                     <form onSubmit={handelBooking} className='grid grid-cols-1 gap-5 mt-6'>
@@ -46,9 +71,9 @@ const BookingModal = ({ treatment, selectedDate, setTreatment }) => {
                                     </option>)
                             }
                         </select>
-                        <input type="text" name='name' placeholder="Full Name" className="input input-bordered w-full" required />
+                        <input type="text" name='name' defaultValue={user.uid && user.displayName} className="input input-bordered w-full" disabled required />
                         <input type="text" name='phone' placeholder="Phone Number" className="input input-bordered w-full" />
-                        <input type="email" name='email' placeholder="Email" className="input input-bordered w-full" required />
+                        <input type="email" name='email' defaultValue={user.uid && user.email} className="input input-bordered w-full" disabled required />
                         <br />
                         <input className='btn btn-accent w-full' type="submit" value="Submit" required />
                     </form>

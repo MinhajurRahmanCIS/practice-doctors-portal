@@ -6,14 +6,18 @@ import { RouterProvider } from 'react-router-dom';
 import router from './Routes/Routes/Routes';
 import 'react-day-picker/dist/style.css';
 import AuthProvider from './context/AuthProvider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router}>
-      </RouterProvider>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RouterProvider router={router} >
+        </RouterProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );
 
